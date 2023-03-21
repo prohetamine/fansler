@@ -269,7 +269,7 @@ const checkerInterval = async (
               throw new Error()
             }
 
-            if (result === 'true') {
+            if (result === true) {
               _debug && console.log('Stream: ' + id + ' [' + i_id + '] [Load & parse] valid proxy: ' + proxy)
               checkedProxys[_key].push(proxy)
               _onData('/* todo */')
