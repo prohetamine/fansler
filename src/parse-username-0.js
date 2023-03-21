@@ -64,7 +64,7 @@ const apiRequest = async proxy => {
     try {
       const result = await new Promise(res => {
         const _request = fork(__dirname + '/libs/request.js', [proxy, _usernames])
-        _request.once("message", message => {
+        _request.on("message", message => {
           res(`${message}`.trim())
         })
       })
