@@ -2,7 +2,7 @@ const request = require('request-promise')
 
 ;(async ({ proxy, usernames }) => {
   setTimeout(() => {
-    console.log('timeout')
+    process.send('timeout')
     process.exit(0)
   }, 30000)
 
@@ -28,9 +28,9 @@ const request = require('request-promise')
     const data = JSON.parse(body)
 
     if (!data.success) {
-      console.log('success bad')
+      process.send('success bad')
     } else {
-      console.log(JSON.stringify(data.response.filter(
+      process.send(JSON.stringify(data.response.filter(
         f =>
           f.followCount < 10 &&
           f.postLikes === 0 &&
@@ -41,7 +41,7 @@ const request = require('request-promise')
     }
     process.exit(0)
   } catch (e) {
-    console.log('timeout')
+    process.send('timeout')
     process.exit(0)
   }
 })({

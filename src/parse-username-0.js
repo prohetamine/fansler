@@ -4,11 +4,11 @@ const request = require('request-promise')
     , readline = require('readline')
     , sleep = require('sleep-promise')
     , proxy = require('./libs/proxy')
-    , { spawn } = require('child_process')
+    , { fork } = require('child_process')
     , syncRandom = array =>
         array.map(elem => [elem, Math.random()]).sort((a, b) => a[1] - b[1]).map(elem => elem[0])
 
-let offset = 0
+let offset = 7
   , usernames = []
 
 const createData = (offset = 0) => {
@@ -63,9 +63,9 @@ const apiRequest = async proxy => {
     const _usernames = usernames.shift()
     try {
       const result = await new Promise(res => {
-        const _request = spawn('node', [__dirname + '/libs/request.js', proxy, _usernames])
-        _request.stdout.on('data', data => {
-          res(`${data}`.trim())
+        const _request = fork(__dirname + '/libs/request.js', [proxy, _usernames])
+        _request.once("message", message => {
+          res(`${message}`.trim())
         })
       })
 
@@ -97,32 +97,45 @@ const writeCall = usernamesString => {
   }
 }
 
-;(async () => {
-  let usernamesArray = []
+const runer = {}
+const run = async proxy => {
+  if (runer[proxy]) {
+    return
+  } else {
+    runer[proxy] = true
+    let usernamesArray = []
 
-  for (;;) {
+    const request = async () => {
+      const usernames = await apiRequest(proxy)
+
+      if (usernames.length !== 0) {
+        console.log('add accounts', usernames.length)
+      }
+
+      usernamesArray = [...usernamesArray, ...usernames]
+
+      if (usernamesArray.length > 100) {
+        writeCall(usernamesArray.join('\n')+'\n')
+        usernamesArray = []
+      }
+
+      setTimeout(request, 100)
+    }
+
+    setTimeout(request, 100)
+  }
+}
+
+;(async () => {
+  setInterval(() => {
+    console.log('offset:', offset, 'stack:', usernames.length, 'proxy:', proxy().length)
+
     const proxyLength = proxy().length > 5
 
     if (proxyLength) {
-      await Promise.all(
-        syncRandom(proxy()).slice(0, 100).map(async proxy => {
-          const usernames = await apiRequest(proxy)
-
-          if (usernames.length !== 0) {
-            console.log('add accounts', usernames.length)
-          }
-
-          usernamesArray = [...usernamesArray, ...usernames]
-
-          if (usernamesArray.length > 100) {
-            writeCall(usernamesArray.join('\n')+'\n')
-            usernamesArray = []
-          }
-        })
-      )
+      proxy().slice(0, 200).map(run)
     } else {
-      console.log('wait proxy', proxyLength)
-      await sleep(5000)
+      console.log('wait proxy')
     }
-  }
+  }, 5000)
 })()
