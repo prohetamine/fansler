@@ -2,7 +2,7 @@ const request = require('request-promise')
 
 ;(async ({ url, proxy, timeout, indicators }) => {
   setTimeout(() => {
-    console.log('timeout')
+    process.send('timeout')
     process.exit(0)
   }, timeout)
 
@@ -25,10 +25,10 @@ const request = require('request-promise')
       }
     })
 
-    console.log(!!indicators.find(({ keyword }) => body.match(keyword)))
+    process.send(!!indicators.find(({ keyword }) => body.match(keyword)))
     process.exit(0)
   } catch (e) {
-    console.log('timeout')
+    process.send('timeout')
     process.exit(0)
   }
 })({

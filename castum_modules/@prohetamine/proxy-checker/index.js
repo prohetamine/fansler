@@ -3,7 +3,7 @@ const request         = require('request-promise')
     , delay           = require('sleep-promise')
     , puppeteer       = require('puppeteer')
     , fs              = require('fs')
-    , { spawn }       = require('child_process')
+    , { fork }        = require('child_process')
     , createHash      = require('./lib/create-hash')
 
 let proxys = []
@@ -259,8 +259,8 @@ const checkerInterval = async (
         } else {
           try {
             const result = await new Promise(res => {
-              const _request = spawn('node', [__dirname + '/lib/request.js', _url, 'http://' + proxy, _timeout, JSON.stringify(_indicators.map(({ keyword }) => keyword))])
-              _request.stdout.on('data', data => {
+              const _request = process.send(__dirname + '/lib/request.js', [_url, 'http://' + proxy, _timeout, JSON.stringify(_indicators.map(({ keyword }) => keyword))])
+              _request.on('message', data => {
                 res(`${data}`.trim())
               })
             })
