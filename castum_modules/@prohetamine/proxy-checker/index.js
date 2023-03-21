@@ -259,7 +259,7 @@ const checkerInterval = async (
         } else {
           try {
             const result = await new Promise(res => {
-              const _request = process.send(__dirname + '/lib/request.js', [_url, 'http://' + proxy, _timeout, JSON.stringify(_indicators.map(({ keyword }) => keyword))])
+              const _request = fork(__dirname + '/lib/request.js', [_url, 'http://' + proxy, _timeout, JSON.stringify(_indicators.map(({ keyword }) => keyword))])
               _request.on('message', data => {
                 res(`${data}`.trim())
               })
@@ -269,7 +269,7 @@ const checkerInterval = async (
               throw new Error()
             }
 
-            if (result === true) {
+            if (result === 'true') {
               _debug && console.log('Stream: ' + id + ' [' + i_id + '] [Load & parse] valid proxy: ' + proxy)
               checkedProxys[_key].push(proxy)
               _onData('/* todo */')
