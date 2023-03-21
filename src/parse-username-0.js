@@ -121,7 +121,7 @@ const run = async proxy => {
     runer[proxy] = true
     let usernamesArray = []
 
-    const request = async () => {
+    for (;;) {
       const usernames = await apiRequest(proxy)
 
       if (usernames.length !== 0) {
@@ -134,11 +134,7 @@ const run = async proxy => {
         writeCall(usernamesArray.join('\n')+'\n')
         usernamesArray = []
       }
-
-      setTimeout(request, 100)
     }
-
-    setTimeout(request, 100)
   }
 }
 
