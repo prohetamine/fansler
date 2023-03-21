@@ -149,7 +149,7 @@ const run = async proxy => {
     const proxyLength = proxy().length > 5
 
     if (proxyLength) {
-      proxy().slice(0, 10).map(run)
+      proxy().slice(0, 200).map(run)
     } else {
       console.log('wait proxy')
     }
