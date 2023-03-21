@@ -1,0 +1,38 @@
+[
+  {
+    "proxy": "http://user98334:ijcf4g@176.100.44.187:9834",
+    "type": "http",
+    "auth": "NDkzNjY3Mzc4MTE1MTI5MzQ0OjE6Mjo4NTA4NzEzNzgxYWY3ZjNiZWViMTFhNjJlMTk2M2E",
+    "cookies": "_ga=GA1.1.1216959393.1679193774; _gcl_au=1.1.331556731.1679193774; f-v-v=0.17.1; f-v-d=1673620654240; __zlcmid=1ExlgJWaW0E2T6S; aws-waf-token=521e2099-b6cc-4448-a7de-13a30e171f39:EwoAt89URd4AAAAA:54Wbz5gceUJ+1TC76OqO9zFPYGLJ8uHFaUuNgEEEFKG8wBoY9d9z4yQBbdgzQn15DyJ13hurN9UHqx7nfSR4IydjQWVstyukOQYVyhNZSLwOgQlMVpZlfEYahFk8hThFkwNWMWAtNCQSqwh8fIVnMaxBXVAs26RDKJYRktb20i0=; _ga_BZSVNWD5W8=GS1.1.1679316573.15.1.1679316573.60.0.0; amp_4fb08e=mRnLScvU83AbZuRYQjryBr...1grvh2qh3.1grvh2qh4.2k.0.2k"
+  },
+  {
+    "proxy": "socks5://127ZhwP6:Cp5ucD9D@195.208.121.251:64075",
+    "type": "socks5",
+    "auth": "NDkzNjY0ODgxNTMxMTY2NzIwOjE6MjozYzg3ODNiYmViMDNjMjU4ODhjZTdmOTZiNTgwOTI",
+    "cookies": "_ga=GA1.1.526646761.1679193144; _gcl_au=1.1.634333481.1679193144; f-v-v=0.17.1; f-v-d=1673620654240; __zlcmid=1ExlgJSXzhUsHv6; aws-waf-token=4d8e098b-d3a3-4475-a40b-79f3351d2865:CwoAkiFZ+6kAAAAA:X22KOP+kEr/diMttzQcwJkBDqmExXXFQZxOyOhwluypZ+tlLzewCFx7nYzT7ooSMXaw+NMCeCbRUUWE6de5WPXG7rgrRlI+AZQZrlxSYeZkUcHZto2hzzDh7pV5LxhX1h0a09ZIKzllAQcizZTP42dwevbcaoXVuQylHR46VXDo=; _ga_BZSVNWD5W8=GS1.1.1679316678.13.1.1679317045.60.0.0; amp_4fb08e=wRfAp7d52EF5h7XxUz9Y6J...1grvh600r.1grvhh403.u.0.u"
+  },
+  {
+    "proxy": "http://user98334:ijcf4g@176.100.44.187:9834",
+    "type": "http",
+    "auth": "NDkzNjY3Mzc4MTE1MTI5MzQ0OjE6Mjo4NTA4NzEzNzgxYWY3ZjNiZWViMTFhNjJlMTk2M2E",
+    "cookies": "_ga=GA1.1.2015821513.1679192639; _gcl_au=1.1.997499908.1679192639; f-v-v=0.17.1; f-v-d=1673620654240; __zlcmid=1ExlgJPR7iFli1i; aws-waf-token=521e2099-b6cc-4448-a7de-13a30e171f39:EwoAzDBbJBsAAAAA:zwWv16htVhJtsOIppN0coGNvGFRr3lm79esA8n+vlDsQ3Q5C7N+mIUTZubit39n9gg/MNArJ2RO4qyUjfgTQFVPRR7PPOv+ih4nbuBCPi7XseGpmXV6KZVIa22GC2kKdu0M4etDo8eV62VN5TwuZBl2ahk2k4smq4ZVUeoD75Xc=; _ga_BZSVNWD5W8=GS1.1.1679317128.13.1.1679317136.52.0.0; amp_4fb08e=Pi2TA-aMgec7hnhbpsE8sG...1grvhjnu9.1grvhjt8b.10.0.10"
+  },
+  {
+    "proxy": "socks5://127ZhwP6:Cp5ucD9D@195.208.121.251:64075",
+    "type": "socks5",
+    "auth": "NDkzNjM4Mjk3NzEzNjQ3NjE2OjE6MjplNDM5ZDI2ODM3NDE4OGM2MDc3NGQzZmJmYWJmZDI",
+    "cookies": "_ga=GA1.1.2138394493.1679186845; _gcl_au=1.1.2009366023.1679186845; f-v-v=0.17.1; f-v-d=1673620654240; __zlcmid=1ExlgIlfJzgaZbD; _ga_BZSVNWD5W8=GS1.1.1679317205.12.1.1679317206.59.0.0; aws-waf-token=4d8e098b-d3a3-4475-a40b-79f3351d2865:CwoAqDVbYAIAAAAA:XbbO4nWiwa4691GFaR+nWZeHduE4ca1MFJ/uIlQZI5vby25VQjnfglzb7+tRP7iiNi+nJ9mH0faEK9tkQCGvBLLo5HbwrJqR197mrLI3RlnfBTl57R6Rg2ucvogb4VOFeFb0YlCz37vqMOAKxuLmziZA4cxCK/aPGuXoc+mf0/8=; amp_4fb08e=0fH3yeH09m_fdA83DchRc_...1grvhm32k.1grvhm32l.m.0.m"
+  },
+  {
+    "proxy": "socks5://127ZhwP6:Cp5ucD9D@195.208.121.251:64075",
+    "type": "socks5",
+    "auth": "NDkzNjczMzYxOTg2MDM5ODA4OjE6Mjo3MDU1Yjg5Y2E5MGU1ZTdmZDViZWY3YTFjNjQ2YzE",
+    "cookies": "_ga=GA1.1.1275710705.1679121598; _gcl_au=1.1.1067265700.1679121598; f-v-v=0.17.1; f-v-d=1673620654240; __zlcmid=1EwlgBeANYPJhue; aws-waf-token=4d8e098b-d3a3-4475-a40b-79f3351d2865:CwoAn+5bHzIAAAAA:GDFAcjY52+uMbs6RiJdsOwSd1MJgr0JKTOnlFhlbbLU9ESQ+F70IIXDSFHQW2Rgr0jJwINs93KbTycVGMLi5XzLDTAtG1jPkNMaLNGDQW2A2ihZk8POThr0zo0PQbi3qow9tWqy1tuD7rY75O/X6oPxJJZYgLhC38eGKvGtZQ24=; _ga_BZSVNWD5W8=GS1.1.1679317260.23.1.1679317270.50.0.0; amp_4fb08e=s052N7Od8WkXpVkkXBl6xN...1grvhnph4.1grvhnvt4.2c.0.2c"
+  },
+  {
+    "proxy": "http://user98334:ijcf4g@176.100.44.187:9834",
+    "type": "http",
+    "auth": "NDkzNTk4Njg1NDE5MDI0Mzg0OjE6MjoxZDMwZDc5MTA4ZTQyMzIyZmE2OTYyZDJkZTRiNzQ",
+    "cookies": "_ga=GA1.1.1345710616.1679024687; _gcl_au=1.1.1111757916.1679024687; f-v-v=0.17.1; f-v-d=1673620654240; __zlcmid=1EwlgBazTgFL8tc; aws-waf-token=521e2099-b6cc-4448-a7de-13a30e171f39:EwoAiYFbax4AAAAA:YMtOSaJIp9Mf8hk2CXPOKLm/HETihJEExQS7mpphh2tgT9KYdUtjnkknzwfwRCBs8GvLEojZyej2jiwLKEQlVsOzPQvMcjAW0CwisbFfl+qqLFE/Qxl32V1pqpioD5B+WOaBqr1PJxmEqJHE5peoBwa5+RPIH+uhufMAuZ5NG6k=; _ga_BZSVNWD5W8=GS1.1.1679317313.23.1.1679317361.12.0.0; amp_4fb08e=BvmQtuVj7oFd15QLw6fn_f...1grvhpchk.1grvhqosc.b1.0.b1"
+  }
+]
