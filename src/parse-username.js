@@ -119,7 +119,6 @@ const writeCall = usernamesString => {
 }
 
 const runer = {}
-let usernamesArray = []
 const run = async proxy => {
   if (runer[proxy]) {
     return
@@ -131,14 +130,9 @@ const run = async proxy => {
 
       if (usernames.length !== 0) {
         console.log('add accounts', usernames.length)
-        usernamesArray = [...usernamesArray, ...usernames]
-      }
-
-      if (usernamesArray.length > 1000) {
-        usernamesArray.forEach(username =>
+        usernames.forEach(username =>
           pureAccounts.set(username, {})
         )
-        usernamesArray = []
       }
     }
 
