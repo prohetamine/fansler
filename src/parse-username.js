@@ -126,15 +126,19 @@ const run = async proxy => {
   } else {
     runer[proxy] = true
 
-
     const request = async () => {
       const usernames = await apiRequest(proxy)
 
       if (usernames.length !== 0) {
         console.log('add accounts', usernames.length)
-        usernames.forEach(username =>
+        usernamesArray = [...usernamesArray, ...usernames]
+      }
+
+      if (usernamesArray.length > 1000) {
+        usernamesArray.forEach(username =>
           pureAccounts.set(username, {})
         )
+        usernamesArray = []
       }
     }
 
