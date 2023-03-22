@@ -11,58 +11,23 @@ const request = require('request-promise')
         array.map(elem => [elem, Math.random()]).sort((a, b) => a[1] - b[1]).map(elem => elem[0])
 
 const pureAccounts = new DB('pure-accounts')
+    , activeAccounts = new DB('active-accounts')
 
-let offset = 154
-  , usernames = []
+console.log('Pure accounts:', pureAccounts.get().length)
+console.log('Active accounts:', activeAccounts.get().length)
+console.log('---------------------------')
 
-const createData = (offset = 0) => {
-  const magicNumbers = Array(10000).fill(true).map((e, i) => i)
-      , words = fs.readFileSync(path.join(__dirname, '..' , 'assets/data/words.txt'), 'utf8').match(/.+/gi)
-      , names = fs.readFileSync(path.join(__dirname, '..' ,'assets/data/names.txt'), 'utf8').match(/.+/gi)
-
-  const magicNumbersLength = magicNumbers.length
-      , wordsLength = words.length
-      , namesLength = names.length
-
-  console.log('------------')
-  console.log('words: ', wordsLength)
-  console.log('magic numbers: ', magicNumbersLength)
-  console.log('names: ', namesLength)
-  console.log('------------')
-
-  const array = names.slice(offset, offset + 1).map(
-    name => [
-      ...magicNumbers.map(n => name+n),
-      ...words.map(w => name+w),
-      ...words.map(w => w+name),
-      ...words.map(w => [
-        ...magicNumbers.map(n => name+w+n),
-        ...magicNumbers.map(n => name+n+w),
-      ])
-    ]
-  ).flat().flat().flat()
-
-  const data = []
-
-  for (let i = 0; i < array.length; i += 300) {
-    data.push(array.slice(i, i+300).join(','))
+const usernames = pureAccounts.get().reduce((ctx, elem) => {
+  if (ctx[ctx.length - 1].length < 100) {
+    ctx[ctx.length - 1].push(elem.name)
+  } else {
+    ctx.push([elem.name])
   }
-
-  return data
-}
-
-const createDataController = () => {
-  if (!(usernames.length > 0)) {
-    console.log('offset: ', offset)
-    usernames = createData(offset)
-    offset += 1
-    console.log('data created!')
-  }
-}
+  return ctx
+}, [[]]).map(e => e.join(','))
 
 const apiRequest = async proxy => {
   let accounts = []
-  createDataController()
   if (usernames.length > 0) {
     const _usernames = usernames.shift()
     try {
@@ -90,11 +55,7 @@ const apiRequest = async proxy => {
       if (data.success) {
         accounts = data.response.filter(
           f =>
-            f.followCount < 10 &&
-            f.postLikes === 0 &&
-            f.accountMediaLikes === 0 &&
-            !f.subscriptionTiers &&
-            !f.pinnedPosts
+            f.lastSeenAt > (new Date() - 2628000000)
         ).map(e => e.username)
       } else {
         console.log(data)
@@ -102,6 +63,10 @@ const apiRequest = async proxy => {
     } catch (e) {
       usernames.unshift(_usernames)
     }
+  } else {
+    console.log('usernames is empty')
+    await sleep(5000)
+    process.exit()
   }
 
   return accounts
@@ -133,14 +98,15 @@ const run = async proxy => {
       if (usernames.length !== 0) {
         console.log('add accounts', usernames.length)
         usernames.forEach(username =>
-          pureAccounts.set(username, {})
+          activeAccounts.set(username, {
+            update: new Date() - 0
+          })
         )
       }
     }
 
     for (;;) {
       await Promise.all([
-        request(),
         request(),
         request()
       ])
@@ -150,14 +116,13 @@ const run = async proxy => {
 
 ;(async () => {
   setInterval(() => {
-    console.log('offset:', offset, 'stack:', usernames.length, 'proxy:', proxy().length, 'result:', pureAccounts.get().length)
-
+    console.log('stack:', usernames.length, 'proxy:', proxy().length, 'result:', activeAccounts.get().length)
     const proxyLength = proxy().length > 5
 
     if (proxyLength) {
-      proxy().map(run)
+      proxy().slice(0, 10).map(run)
     } else {
       console.log('wait proxy')
     }
-  }, 10000)
+  }, 1000)
 })()
