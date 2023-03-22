@@ -9,7 +9,7 @@ const request = require('request-promise')
     , syncRandom = array =>
         array.map(elem => [elem, Math.random()]).sort((a, b) => a[1] - b[1]).map(elem => elem[0])
 
-let offset = 7
+let offset = 151
   , usernames = []
 
 const createData = (offset = 0) => {
@@ -114,14 +114,15 @@ const writeCall = usernamesString => {
 }
 
 const runer = {}
+let usernamesArray = []
 const run = async proxy => {
   if (runer[proxy]) {
     return
   } else {
     runer[proxy] = true
-    let usernamesArray = []
 
-    for (;;) {
+
+    const request = async () => {
       const usernames = await apiRequest(proxy)
 
       if (usernames.length !== 0) {
@@ -135,6 +136,14 @@ const run = async proxy => {
         usernamesArray = []
       }
     }
+
+    for (;;) {
+      await Promise.all([
+        request(),
+        request(),
+        request()
+      ])
+    }
   }
 }
 
@@ -145,7 +154,7 @@ const run = async proxy => {
     const proxyLength = proxy().length > 5
 
     if (proxyLength) {
-      proxy().slice(0, 200).map(run)
+      proxy().map(run)
     } else {
       console.log('wait proxy')
     }
