@@ -12,7 +12,7 @@ const request = require('request-promise')
 
 const pureAccounts = new DB('pure-accounts')
 
-let offset = 154
+let offset = 160
   , usernames = []
 
 const createData = (offset = 0) => {
