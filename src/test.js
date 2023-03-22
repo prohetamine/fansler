@@ -1,21 +1,7 @@
-const proxy = require('./libs/proxy')
-    , fetch = require('node-fetch')
-    , sleep = require('sleep-promise')
-    , HttpsProxyAgent = require('https-proxy-agent')
+const DB = require('./libs/db')
+    , fs = require('fs')
 
-;(async () => {
-  await sleep(999)
-  const proxys = proxy()
+const a = new DB('pure-accounts')
+console.log(a.get())
 
-  for (let i = 0; i < proxys.length; i++) {
-    fetch('https://api.ipify.org', {
-      agent: new HttpsProxyAgent(`http://${proxys[i]}`)
-    })
-      .then(e => e.text())
-      .then(e => console.log(e))
-      .catch(e => {
-        console.log(e)
-      })
-  }
-
-})()
+//console.log(a.set('lol', {}))

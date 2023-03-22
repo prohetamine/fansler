@@ -1,18 +1,19 @@
-const axios = require('axios')
-    , HttpsProxyAgent = require('https-proxy-agent')
-    , { SocksProxyAgent } = require('socks-proxy-agent')
+const request = require('request-promise')
+    , DB = require('./libs/db')
     , fs = require('fs')
     , path = require('path')
-    , sleep = require('sleep-promise')
     , readline = require('readline')
+    , sleep = require('sleep-promise')
     , proxy = require('./libs/proxy')
+    , fetch = require('node-fetch')
+    , HttpsProxyAgent = require('https-proxy-agent')
+    , syncRandom = array =>
+        array.map(elem => [elem, Math.random()]).sort((a, b) => a[1] - b[1]).map(elem => elem[0])
 
-axios.defaults.timeout = 60 * 1000 * 10
+const pureAccounts = new DB('pure-accounts')
 
-let i = 0
-  , offset = 0
+let offset = 154
   , usernames = []
-  , blocked = false
 
 const createData = (offset = 0) => {
   const magicNumbers = Array(10000).fill(true).map((e, i) => i)
@@ -51,8 +52,7 @@ const createData = (offset = 0) => {
 }
 
 const createDataController = () => {
-  if (!usernames[i]) {
-    i = 0
+  if (!(usernames.length > 0)) {
     console.log('offset: ', offset)
     usernames = createData(offset)
     offset += 1
@@ -60,63 +60,50 @@ const createDataController = () => {
   }
 }
 
-const apiRequest = async ({ proxy, auth, type, cookies }) => {
+const apiRequest = async proxy => {
   let accounts = []
   createDataController()
-  if (usernames[i]) {
-    i++
-    for (let k = 0; k < 10; k++) {
-      try {
-        const { data } = await axios(`https://apiv3.fansly.com/api/v1/account?usernames=${usernames[i-1]}&ngsw-bypass=true`, {
-          agent: type === 'socks5' ? new SocksProxyAgent(proxy) : new HttpsProxyAgent(proxy),
-          headers: {
-            "authority": "apiv3.fansly.com",
-            "accept": "application/json, text/plain, */*",
-            "accept-language": "en-US,en;q=0.9",
-            "authorization": auth,
-            "cookies": cookies,
-            "origin": "https://fansly.com",
-            "referer": "https://fansly.com/",
-            "sec-ch-ua": '"Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"macOS"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site",
-            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
-          },
-          referrer: "https://fansly.com/",
-          referrerPolicy: "strict-origin-when-cross-origin",
-          body: null,
-          method: "GET",
-          mode: "cors",
-          credentials: "include"
-        })
-
-        if (!data.success) {
-          console.log('success bad')
-          await sleep(5000)
-        } else {
-          accounts = data.response.filter(
-            f =>
-              f.followCount < 10 &&
-              f.postLikes === 0 &&
-              f.accountMediaLikes === 0 &&
-              !f.subscriptionTiers &&
-              !f.pinnedPosts
-          ).map(e => e.username)
+  if (usernames.length > 0) {
+    const _usernames = usernames.shift()
+    try {
+      const result = await fetch(`https://apiv3.fansly.com/api/v1/account?usernames=${_usernames}&ngsw-bypass=true`, {
+        agent: new HttpsProxyAgent(`http://${proxy}`),
+        headers: {
+          "authority": "apiv3.fansly.com",
+          "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+          "sec-ch-ua": '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"macOS"',
+          "sec-fetch-dest": "document",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-site": "none",
+          "sec-fetch-user": "?1",
+          "upgrade-insecure-requests": "1",
+          "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
         }
-        break
-      } catch (e) {
-        console.log(e)
-        await sleep(5000)
+      })
+      .then(e => e.text())
+
+      const data = JSON.parse(result)
+
+      if (data.success) {
+        accounts = data.response.filter(
+          f =>
+            f.followCount < 10 &&
+            f.postLikes === 0 &&
+            f.accountMediaLikes === 0 &&
+            !f.subscriptionTiers &&
+            !f.pinnedPosts
+        ).map(e => e.username)
       }
+    } catch (e) {
+      usernames.unshift(_usernames)
     }
   }
 
   return accounts
 }
-
 
 const writeCall = usernamesString => {
   for (;;) {
@@ -129,28 +116,46 @@ const writeCall = usernamesString => {
   }
 }
 
-const controller = async account => {
-  let usernamesArray = []
+const runer = {}
+let usernamesArray = []
+const run = async proxy => {
+  if (runer[proxy]) {
+    return
+  } else {
+    runer[proxy] = true
 
-  for (;;) {
-    const usernames = await apiRequest(account)
-    if (usernames.length !== 0) {
-      console.log(usernames)
+
+    const request = async () => {
+      const usernames = await apiRequest(proxy)
+
+      if (usernames.length !== 0) {
+        console.log('add accounts', usernames.length)
+        usernames.forEach(username =>
+          pureAccounts.set(username, {})
+        )
+      }
     }
-    usernamesArray = [...usernamesArray, ...usernames]
 
-    if (usernamesArray.length > 100) {
-      writeCall(usernamesArray.join('\n')+'\n')
-      usernamesArray = []
+    for (;;) {
+      await Promise.all([
+        request(),
+        request(),
+        request()
+      ])
     }
   }
 }
 
-const run = async account => {
-  for (let i = 0; i < 2; i++) {
-    controller(account)
-    await sleep(1000)
-  }
-}
+;(async () => {
+  setInterval(() => {
+    console.log('offset:', offset, 'stack:', usernames.length, 'proxy:', proxy().length, 'result:', pureAccounts.get().length)
 
-JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'assets', 'accounts.json'), 'utf8')).forEach(run)
+    const proxyLength = proxy().length > 5
+
+    if (proxyLength) {
+      proxy().map(run)
+    } else {
+      console.log('wait proxy')
+    }
+  }, 10000)
+})()
