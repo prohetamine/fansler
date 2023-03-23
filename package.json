@@ -8,7 +8,8 @@
     "pu": "node src/parse-username.js",
     "pucb": "node src/parse-username-cb.js",
     "pau": "node src/parse-active-users.js",
-    "test": "node src/test.js"
+    "test": "node src/test.js",
+    "tf": "node src/follow-test.js"
   },
   "author": "",
   "license": "ISC",

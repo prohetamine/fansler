@@ -11,7 +11,7 @@ const request = require('request-promise')
         array.map(elem => [elem, Math.random()]).sort((a, b) => a[1] - b[1]).map(elem => elem[0])
 
 const pureAccounts = new DB('pure-accounts')
-    , activeAccounts = new DB('active-accounts')
+    , activeAccounts = new DB('active-accounts', 1000)
 
 console.log('Pure accounts:', pureAccounts.get().length)
 console.log('Active accounts:', activeAccounts.get().length)
