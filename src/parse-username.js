@@ -1,14 +1,9 @@
-const request = require('request-promise')
-    , DB = require('./libs/db')
+const DB = require('./libs/db')
     , fs = require('fs')
     , path = require('path')
-    , readline = require('readline')
-    , sleep = require('sleep-promise')
-    , proxy = require('./libs/proxy')
+    , Proxster = require('proxster')
     , fetch = require('node-fetch')
     , HttpsProxyAgent = require('https-proxy-agent')
-    , syncRandom = array =>
-        array.map(elem => [elem, Math.random()]).sort((a, b) => a[1] - b[1]).map(elem => elem[0])
 
 const pureAccounts = new DB('pure-accounts')
 
@@ -154,13 +149,48 @@ const run = async proxy => {
 }
 
 ;(async () => {
-  setInterval(() => {
-    console.log('offset:', offset, 'stack:', usernames.length, 'proxy:', proxy().length, 'result:', pureAccounts.get().length)
+  const proxy = new Proxster({
+    useProxy: 'http://user98334:ijcf4g@176.100.44.187:9834'
+  })
+  
+  await proxy.setBlockedBadProxyTimeout(60000 * 15)
+  await proxy.setRefreshGoodProxyTimeout(60000 * 5)
 
-    const proxyLength = proxy().length > 5
+  await proxy.loadInterval(60000 * 30, { started: true })
+  
+  await proxy.checkInterval('https://apiv3.fansly.com/api/v1/account?usernames=anime&ngsw-bypass=true', 1000, {
+    timeout: 20000,
+    headers: {
+      "authority": "apiv3.fansly.com",
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+      "sec-ch-ua": '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"macOS"',
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "none",
+      "sec-fetch-user": "?1",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+    }, 
+		method: 'GET',
+	  //body: undefined,
+		stream: 100,
+		indicator: body => body.match(/username/)
+  })
+
+  await proxy.wait({ minimumProxyCount: 10 })
+
+  setInterval(async () => {
+    const proxys = await proxy.all()
+
+    console.log('offset:', offset, 'stack:', usernames.length, 'proxy:', proxys.length, 'result:', pureAccounts.get().length)
+
+    const proxyLength = proxys.length > 5
 
     if (proxyLength) {
-      proxy().map(run)
+      proxys.map(run)
     } else {
       console.log('wait proxy')
     }
