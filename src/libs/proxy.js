@@ -12,8 +12,8 @@ const keyName = 'myproxy'
 
   const { key, kill, save, clean } = await proxy.checkerInterval(keyName, {
     url: 'https://apiv3.fansly.com/api/v1/account?usernames=anime&ngsw-bypass=true',
-    timeout: 15000,
-    stream: 20,
+    timeout: 5000,
+    stream: 10,
     session: __dirname + '/fansly',
     debug: false,
     indicators: [{

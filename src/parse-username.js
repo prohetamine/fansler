@@ -12,7 +12,7 @@ const request = require('request-promise')
 
 const pureAccounts = new DB('pure-accounts')
 
-let offset = 276
+let offset = 751
   , usernames = []
 
 const createData = (offset = 0) => {
@@ -66,6 +66,12 @@ const apiRequest = async proxy => {
   if (usernames.length > 0) {
     const _usernames = usernames.shift()
     try {
+      const controller = new AbortController()
+
+      setTimeout(() => {
+        controller.abort()
+      }, 10000)
+
       const result = await fetch(`https://apiv3.fansly.com/api/v1/account?usernames=${_usernames}&ngsw-bypass=true`, {
         agent: new HttpsProxyAgent(`http://${proxy}`),
         headers: {
@@ -81,7 +87,8 @@ const apiRequest = async proxy => {
           "sec-fetch-user": "?1",
           "upgrade-insecure-requests": "1",
           "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
-        }
+        },
+        signal: controller.signal
       })
       .then(e => e.text())
 
